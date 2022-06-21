@@ -1,25 +1,18 @@
-FROM alpine
+FROM openjdk:19-alpine
 
 ARG BUILD_DATE
 ARG VERSION
-LABEL version="lcaparros/<serviceName> - ${VERSION} Build-date: ${BUILD_DATE}"
+LABEL version="lcaparros/allure - ${VERSION} Build-date: ${BUILD_DATE}"
 LABEL maintainer="lcaparros"
 
 RUN \
   echo "**** install packages ****" && \
-  apk update && \
-  apk add --no-cache --virtual=build-dependencies \
-    curl && \
-  echo "**** cleanup ****" && \
-  apk del --purge \
-    build-dependencies && \
-  rm -rf \
-    /tmp/* \
-    /root/.cache \
-    /root/.cargo
+  wget https://github.com/allure-framework/allure2/releases/download/${VERSION}/allure-${VERSION}.tgz && \
+  tar -xvzf allure-${VERSION}.tgz
+
+ENV PATH="/allure-${VERSION}/bin:$PATH"
 
 WORKDIR /files
 VOLUME /files
-EXPOSE 8080
 
-ENTRYPOINT ["ls", "-l"]
+ENTRYPOINT ["sh"]
