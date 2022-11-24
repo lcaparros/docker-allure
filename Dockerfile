@@ -7,7 +7,7 @@ LABEL maintainer="lcaparros"
 
 RUN \
   apk update && \
-  apk install -y curl && \
+  apk add curl && \
   echo "**** install packages ****" && \
   wget https://github.com/allure-framework/allure2/releases/download/${VERSION}/allure-${VERSION}.tgz && \
   tar -xvzf allure-${VERSION}.tgz

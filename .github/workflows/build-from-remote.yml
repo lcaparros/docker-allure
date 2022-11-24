@@ -1,0 +1,30 @@
+name: Get latest Allure release version
+on:
+  push:
+    branches:
+      - main
+jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+      - name: Fetch release version
+        id: fetch_version
+        run: |
+          curl -sL https://api.github.com/repos/allure-framework/allure2/releases/latest | \
+          jq -r ".tag_name" > release-versions/allure-latest.txt
+          echo ::set-output name=VERSION::$(cat release-versions/allure-latest.txt)
+      - name: Check for modified files
+        id: git_check
+        run: echo ::set-output name=MODIFIED::$([ -z "`git status --porcelain`" ] && echo "false" || echo "true")
+      - name: Commit latest release version
+        if: steps.git_check.outputs.MODIFIED == 'true'
+        run: |
+          git config --global user.name 'lcaparros'
+          git config --global user.email 'secrets.USER_EMAIL'
+          git commit -am "Updating version to ${{ steps.fetch_version.outputs.VERSION }}"
+          git push
+          git tag -a v${{ steps.fetch_version.outputs.VERSION }} -m "Updating version to ${{ steps.fetch_version.outputs.VERSION }}"
+          git push origin v${{ steps.fetch_version.outputs.VERSION }}
