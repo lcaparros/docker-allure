@@ -1,8 +1,7 @@
 name: Get latest Allure release version
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron:  '0 0 * * 5'
 jobs:
   get-version:
     runs-on: ubuntu-latest
@@ -13,8 +12,10 @@ jobs:
       - name: Fetch release version
         id: fetch_version
         run: |
+          echo "OLD_VERSION = $(cat release-versions/allure-latest.txt)"
           curl -sL https://api.github.com/repos/allure-framework/allure2/releases/latest | \
           jq -r ".tag_name" > release-versions/allure-latest.txt
+          echo "CURRENT_VERSION = $(cat release-versions/allure-latest.txt)"
           echo ::set-output name=VERSION::$(cat release-versions/allure-latest.txt)
       - name: Check for modified files
         id: git_check
