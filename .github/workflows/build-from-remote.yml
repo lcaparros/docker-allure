@@ -1,7 +1,8 @@
 name: Get latest Allure release version
 on:
-  schedule:
-    - cron:  '0 0 * * 5'
+  workflow_dispatch
+#  schedule:
+#    - cron:  '0 0 * * 5'
 jobs:
   get-version:
     runs-on: ubuntu-latest
