@@ -20,10 +20,9 @@ jobs:
       - name: Get the version
         id: get_version
         run: |
-          VERSION=${GITHUB_REF#refs\/tags\/v}
-          echo "${VERSION}" >> $GITHUB_OUTPUT
-          echo "CLEAN_VERSION=${VERSION/-*/}" >> $GITHUB_OUTPUT
-          echo "SUFIX=${VERSION/*-/}" >> $GITHUB_OUTPUT
+          echo "VERSION=${GITHUB_REF#refs\/tags\/v}" >> $GITHUB_OUTPUT
+          echo "CLEAN_VERSION=${${GITHUB_REF#refs\/tags\/v}/-*/}" >> $GITHUB_OUTPUT
+          echo "SUFIX=${${GITHUB_REF#refs\/tags\/v}/*-/}" >> $GITHUB_OUTPUT
 
       - name: Get the image name
         id: get_name
