@@ -31,7 +31,7 @@ jobs:
       - name: Build the Docker image
         run: |
           [[ "${{ steps.get_version.outputs.VERSION }}" == *"-"* ]] && DOCKERFILE="Dockerfile.${{ steps.get_version.outputs.SUFIX }}" || DOCKERFILE="Dockerfile"
-          docker build --build-arg VERSION=${{ steps.get_version.outputs.VERSION }} -build-arg CLEAN_VERSION=${{ steps.get_version.outputs.CLEAN_VERSION }} --build-arg BUILD_DATE="$(date +%Y/%m/%dT%H:%M:%S)" --file ${DOCKERFILE} --tag ${{ steps.get_name.outputs.IMAGE_NAME }}:${{ steps.get_version.outputs.VERSION }} .
+          docker build --build-arg VERSION=${{ steps.get_version.outputs.VERSION }} --build-arg CLEAN_VERSION=${{ steps.get_version.outputs.CLEAN_VERSION }} --build-arg BUILD_DATE="$(date +%Y/%m/%dT%H:%M:%S)" --file ${DOCKERFILE} --tag ${{ steps.get_name.outputs.IMAGE_NAME }}:${{ steps.get_version.outputs.VERSION }} .
       
       # Login against a Docker registry
       - name: Log into registry ${{ env.REGISTRY }}
