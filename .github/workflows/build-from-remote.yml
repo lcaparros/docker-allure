@@ -1,13 +1,14 @@
 name: Get latest Allure release version
 on:
-  workflow_dispatch
-#  schedule:
-#    - cron:  '0 0 * * 5'
+  workflow_dispatch:
+  schedule:
+    - cron:  '0 5 1 * *'
+
 jobs:
   get-version:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
       - name: Fetch release version
@@ -17,7 +18,7 @@ jobs:
           curl -sL https://api.github.com/repos/allure-framework/allure2/releases/latest | \
           jq -r ".tag_name" > release-versions/allure-latest.txt
           echo "CURRENT_VERSION = $(cat release-versions/allure-latest.txt)"
-          echo ::set-output name=VERSION::$(cat release-versions/allure-latest.txt)
+          echo "VERSION::$(cat release-versions/allure-latest.txt)" >> $GITHUB_OUTPUT"
       - name: Check for modified files
         id: git_check
         run: echo ::set-output name=MODIFIED::$([ -z "`git status --porcelain`" ] && echo "false" || echo "true")
