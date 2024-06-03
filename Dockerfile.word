@@ -2,11 +2,11 @@ FROM openjdk:19-alpine
 
 ARG BUILD_DATE
 ARG VERSION
+ARG CLEAN_VERSION
 LABEL version="lcaparros/allure - ${VERSION} Build-date: ${BUILD_DATE}"
 LABEL maintainer="lcaparros"
 
 RUN \
-  CLEAN_VERSION=$(echo ${VERSION} | cut -f1 -d"-") && \
   apk update && \
   apk add --no-cache curl jq bash git python3 py3-pip && \
   echo "**** install packages ****" && \

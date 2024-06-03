@@ -19,7 +19,10 @@ jobs:
 
       - name: Get the version
         id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs\/tags\/v}" >> $GITHUB_OUTPUT
+        run: |
+          echo "VERSION=${GITHUB_REF#refs\/tags\/v}" >> $GITHUB_OUTPUT
+          echo "CLEAN_VERSION=${VERSION/-*/}" >> $GITHUB_OUTPUT
+          echo "SUFIX=${VERSION/*-/}" >> $GITHUB_OUTPUT
 
       - name: Get the image name
         id: get_name
@@ -27,8 +30,8 @@ jobs:
 
       - name: Build the Docker image
         run: |
-          [[ "${{ steps.get_version.outputs.VERSION }}" == *"-"* ]] && DOCKERFILE="Dockerfile.word" || DOCKERFILE="Dockerfile"
-          docker build --build-arg VERSION=${{ steps.get_version.outputs.VERSION }} --build-arg BUILD_DATE="$(date +%Y/%m/%dT%H:%M:%S)" --file ${DOCKERFILE} --tag ${{ steps.get_name.outputs.IMAGE_NAME }}:${{ steps.get_version.outputs.VERSION }} .
+          [[ "${{ steps.get_version.outputs.VERSION }}" == *"-"* ]] && DOCKERFILE="Dockerfile.${{ steps.get_version.outputs.SUFIX }}" || DOCKERFILE="Dockerfile"
+          docker build --build-arg VERSION=${{ steps.get_version.outputs.VERSION }} -build-arg CLEAN_VERSION=${{ steps.get_version.outputs.CLEAN_VERSION }} --build-arg BUILD_DATE="$(date +%Y/%m/%dT%H:%M:%S)" --file ${DOCKERFILE} --tag ${{ steps.get_name.outputs.IMAGE_NAME }}:${{ steps.get_version.outputs.VERSION }} .
       
       # Login against a Docker registry
       - name: Log into registry ${{ env.REGISTRY }}
